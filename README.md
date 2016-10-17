@@ -1,7 +1,7 @@
 ## Zero Downtime Deployment with Warp
 
 Using `warp` it is easy to perform zero downtime deployment with
-`SO_REUSEPORT`. This literate Haskell file creates a server for zero downtime deploys, and the repo has utilities that restart it without failed requests.
+`SO_REUSEPORT`. This literate Haskell file creates a server for zero downtime deploys and the repo has utilities that restart it without failed requests.
 
 ## Outline
 - [`SO_REUSEPORT`](#so_reuseport)
@@ -13,14 +13,12 @@ Using `warp` it is easy to perform zero downtime deployment with
 
 ## `SO_REUSEPORT`
 
-`SO_REUSEPORT` is an extension on newer versions of Linux and BSD (avoid OSX) that allows multiple processes to bind to the same port. Additionally, Linux will load balance requests between the processes.
+`SO_REUSEPORT` is an extension on newer versions of Linux and BSD (avoid OSX) that allows multiple sockets to bind to the same port. Additionally, Linux will load balance connections between sockets.
 
 There is a downside to `SO_REUSEPORT`. When the number of sockets bound to a
 port changes, there is the possibility that packets for a single TCP connection will get routed to two different sockets. This will lead to a failed requests. The likelihood is very low, but to prevent against this, we use a technique developed by Yelp.
 
 #### Boring Haskell Import Statements
-
-Just ignore this code for now and skip to [Start Warp with `SO_REUSEPORT`](#start).
 
 ```haskell
 import Control.Exception
@@ -55,16 +53,15 @@ bindSocketReusePort p =
 ```
 
 The server code takes advantage of two aspects of `warp`'s design.
-  1. `warp` let's you start the server with a socket your have created on your own.
+  1. `warp` let's you start the server with a socket you have previously created.
   2. When the socket is closed `warp` gracefully shutdowns after it completes the current outstanding requests.
 
 ```haskell
 main :: IO ()
 main = do
-  -- Before we can shutdown an old version of a process, we need to run health
-  -- checks on the new version. Since we can't force the OS to route our
-  -- requests to the process we want, we instead return the process id with -- the result of our health checks. To do that we start by getting the
-  -- process id on load.
+  -- Before we shutdown an old version of the server, we need to run health
+  -- checks on the new version. The minimal health check is ensuring the new
+  -- server is responding to requests. We return the PID in every request to -- verify the server is running. We grab the PID on load here.
   CPid processId <- getProcessID
   -- We create our socket and setup a handler to close the socket on
   -- termination premature or otherwise.
@@ -73,18 +70,17 @@ main = do
     close
     $ \sock -> do
        -- Before we start the server, we install a signal handler for
-       -- `SIGINT` to close the socket. This will start the graceful
+       -- `SIGTERM` to close the socket. This will start the graceful
        -- shutdown.
-       installHandler sigINT (CatchOnce $ close sock) Nothing
-       -- Now that we are setup to handle termination, we can start the
-       -- server with socket we created earlier.
+       installHandler sigTERM (CatchOnce $ close sock) Nothing
+       -- Start the server with socket we created earlier.
        runSettingsSocket defaultSettings sock $ \_ responder ->
          -- Finally we create a single request for testing that the server is
          -- running by returning the PID.
          responder $ responseLBS status200 [] $ pack $ show processId
 ```
 
-In a real server, we would have many endpoints and could either return the PID in a header, or with a special health endpoint. However our test server will return the PID regardless of the URL path parts or the HTTP verb.
+In a real server we would have many endpoints. We could either return the PID in a header or with a special health endpoint. However, our test server returns the PID regardless of the URL path parts or the HTTP verb.
 
 ## <a name="reloading"> Reloading
 
@@ -130,7 +126,7 @@ Reloading a new version in production requires a dance with your process supervi
      ```
   1. Make requests to the health endpoint until the new PID is returned.
   1. Stop `SYN` packets again.
-  1. Send `SIGINT` to the other server processes so they will gracefully
+  1. Send `SIGTERM` to the other server processes so they will gracefully
      shutdown.
   1. Release the plug again.
 

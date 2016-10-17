@@ -9,7 +9,7 @@ while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
 ab -n 100000 http://localhost:7000/
 
-kill -2 $server
+kill $server
 
 ./bin/reload > /dev/null &
 reloader=$!
@@ -20,4 +20,4 @@ while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
 ab -n 100000 http://localhost:7000/
 
-kill -2 $reloader
+kill $reloader

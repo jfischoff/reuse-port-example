@@ -60,7 +60,7 @@ reload cmdPath = do
     oldPids <-  filter (newPid /=)
             <$> findProcesses "reuse-server"
 
-    pauseSYN $ mapM_ (signalProcess sigINT) oldPids
+    pauseSYN $ mapM_ (signalProcess sigTERM) oldPids
 
 main :: IO ()
 main = reload . head =<< getArgs
