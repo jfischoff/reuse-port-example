@@ -116,15 +116,13 @@ Reloading a new version in production requires a dance with your process supervi
   1. Stop additional `SYN` from being delivered using
 
      ```bash
-     sudo nl-qdisc-add --dev=lo --parent=1:4 --id=40: \
-                       --update plug --buffer
+     sudo nl-qdisc-add --dev=lo --parent=1:4 --id=40: --update plug --buffer
      ```
   1. Start a new version of the server and save the PID.
   1. Release the plug and let the `SYN` packets flow.
 
      ```bash
-     sudo nl-qdisc-add --dev=lo --parent=1:4 --id=40: \
-                       --update plug --release-indefinite
+     sudo nl-qdisc-add --dev=lo --parent=1:4 --id=40: --update plug --release-indefinite
      ```
   1. Make requests to the health endpoint until the new PID is returned.
   1. Stop `SYN` packets again.
