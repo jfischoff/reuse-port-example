@@ -23,5 +23,5 @@ set ylabel "response time (ms)"
 # Tell gnuplot to use tabs as the delimiter instead of spaces (default)
 set datafile separator '\t'
 # Plot the data
-plot "reload.tsv" every ::2 using 2:5 title 'response time' with points
+plot "reloading.tsv" every ::2 using 2:5 title 'response time' with points
 exit

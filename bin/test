@@ -1,9 +1,11 @@
+stack build
+
 sudo ./bin/setup-qdiscs
 
 stack exec reuse-server > /dev/null &
 server=$!
 
-trap "kill $server" SIGTERM EXIT
+trap "kill $server" SIGTERM SIGINT
 
 while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
@@ -14,10 +16,13 @@ kill $server
 ./bin/reload > /dev/null &
 reloader=$!
 
-trap "kill $reloader" SIGTERM EXIT
+trap "kill $reloader" SIGTERM SIGINT
 
 while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
 ab -n 100000 -g reloading.tsv http://localhost:7000/
 
 kill $reloader
+killall reuse-server
+
+bin/make-plots

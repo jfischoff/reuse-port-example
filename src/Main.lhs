@@ -140,34 +140,34 @@ This repo includes a Vagrant file for running a performance test. To run the tes
 $ vagrant up
 $ vagrant ssh
 $ cd /vagrant
-$ stack build
 $ bin/test
 ```
 
 `bin/test` will:
 
   1. Build the project.
+  1. Setup the queuing disciplines.
   1. Start the server.
   1. Run ab.
   1. Stop the server.
   1. Start the `reload` every 100 ms.
   1. Run ab.
 
-Below are the times without constant reloading and with constant reloading. Crucially no connections are dropped and there are no requests failures.
+Below are the times without constant reloading and with constant reloading. Crucially no connections are dropped and there are no requests failures. 100000 requests were run.
 
 #### Without Constant Reloading (Baseline)
-- mean: 0.475 ms
-- stddev: 0.3 ms
+- mean: 0.367 ms
+- stddev: 0.1 ms
 - 99%: 1 ms
-- max: 76 ms
+- max: 19 ms
 
 ![Baseline Scatter Plot](/baseline.png)
 
 #### With Constant Reloading
-- mean: 1.05 ms
-- stddev: 6.4 ms
-- 99%: 10 ms
-- max: 450 ms
+- mean: 0.492 ms
+- stddev: 1.1 ms
+- 99%: 1 ms
+- max: 45 ms
 
 ![Reloading Scatter Plot](/reloading.png)
 
@@ -198,7 +198,7 @@ One alternative would be to use an immutable blue/green deployment strategy, and
 
 ### Future Work
 
-An alternative design for utilizing `SO_REUSEPORT` is to create a parent process that keeps a pool of sockets and passes the file descriptions to the new children on reload. This is essentially the design that `nginx` has. The primary advantage is in the typical case we would not need to utilize the `plug` queuing discipline.
+An alternative design for utilizing `SO_REUSEPORT` is to create a parent process that keeps a pool of sockets and passes the file descriptions to the new children on reload. This is essentially the design that `nginx` ([nginx reload](http://nginx.org/en/docs/control.html?utm_source=socket-sharding-nginx-release-1-9-1&utm_medium=blog&_ga=1.38701153.370685645.1475165126#upgrade), [nginx and `SO_REUSEPORT`](https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/)) has. The primary advantage is in the typical case we would not need to utilize the `plug` queuing discipline.
 
 However, changing the number of child process will still be problematic but we could utilize the `plug` queueing discipline approach Yelp developed utilized here.
 
