@@ -1,0 +1,5 @@
+
+while [ 1 ]; do
+  .stack-work/install/x86_64-linux/lts-7.3/8.0.1/bin/reload .stack-work/install/x86_64-linux/lts-7.3/8.0.1/bin/reuse-server
+  sleep 0.1
+done

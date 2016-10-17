@@ -1,0 +1,49 @@
+name:                reuse-port-example
+version:             0.1.0.0
+synopsis:            REUSE_PORT example
+description:         A simple example of using REUSE_PORT for zero downtime deploys
+homepage:            https://github.com/jfischoff/reuse-port-example#readme
+license:             BSD3
+license-file:        LICENSE
+author:              Jonathan Fischoff
+maintainer:          Jonathan Fischoff
+copyright:           2016 Jonathan Fischoff
+category:            Web
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+executable reload
+  main-is: reload/Main.hs
+  ghc-options: -Wall
+               -fno-warn-unused-do-bind
+               -threaded
+               -rtsopts
+               -with-rtsopts=-N
+               -pgmL markdown-unlit
+  build-depends: base
+               , process
+               , unix
+               , wreq
+               , lens
+               , bytestring
+
+  default-language: Haskell2010
+
+executable reuse-server
+  main-is: src/Main.lhs
+  ghc-options: -Wall
+               -fno-warn-unused-do-bind
+               -threaded
+               -rtsopts
+               "-with-rtsopts=-N -I0 -qg"
+               -pgmL markdown-unlit
+  build-depends: base
+               , warp
+               , wai
+               , http-types
+               , unix
+               , network
+               , bytestring
+               , markdown-unlit
+  default-language: Haskell2010

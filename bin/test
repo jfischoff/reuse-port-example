@@ -1,0 +1,23 @@
+sudo ./bin/setup-qdisks
+
+stack exec reuse-server > /dev/null &
+server=$!
+
+trap "kill $server" SIGTERM EXIT
+
+while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
+
+ab -n 100000 http://localhost:7000/
+
+kill -2 $server
+
+./bin/reload > /dev/null &
+reloader=$!
+
+trap "kill $reloader" SIGTERM EXIT
+
+while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
+
+ab -n 100000 http://localhost:7000/
+
+kill -2 $reloader
