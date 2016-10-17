@@ -61,7 +61,8 @@ main :: IO ()
 main = do
   -- Before we shutdown an old version of the server, we need to run health
   -- checks on the new version. The minimal health check is ensuring the new
-  -- server is responding to requests. We return the PID in every request to -- verify the server is running. We grab the PID on load here.
+  -- server is responding to requests. We return the PID in every request to
+  -- verify the server is running. We grab the PID on load here.
   CPid processId <- getProcessID
   -- We create our socket and setup a handler to close the socket on
   -- termination premature or otherwise.
