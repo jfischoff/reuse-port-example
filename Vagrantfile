@@ -66,31 +66,12 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    apt-get update
-    apt-get -y install make
-    apt-get -y install zlib-dev
-    apt-get -y install libgmp-dev
-    apt-get -y install curl
-    apt-get -y install apache2-utils
-    apt-get -y install git
-    cd
-    git clone https://github.com/wg/wrk
-    cd wrk
-    make
-    cp wrk /usr/local/bin
-    cd
-    curl http://downloads.haskell.org/~ghc/8.0.1/ghc-8.0.1-x86_64-deb8-linux.tar.xz > ghc-8.0.1-x86_64-deb8-linux.tar.xz
-    tar -xvf ghc-8.0.1-x86_64-deb8-linux.tar.xz
-    cd ghc-8.0.1
-    ./configure
-    make install
-    cd
-    curl https://www.haskell.org/cabal/release/cabal-install-1.24.0.0/cabal-install-1.24.0.0.tar.gz > cabal-install-1.24.0.0.tar.gz
-    tar -xvf cabal-install-1.24.0.0.tar.gz
-    cd cabal-install-1.24.0.0
-    ./bootstrap.sh
-    cp /root/.cabal/bin/cabal /usr/local/bin/
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 575159689BEFB442
+    echo 'deb http://download.fpcomplete.com/ubuntu xenial main'|sudo tee /etc/apt/sources.list.d/fpco.list
 
-    echo 'export PATH=/home/vagrant/.cabal/bin:$PATH' >> /home/vagrant/.profile
+    apt-get update
+    apt-get -y install stack
+    apt-get -y install gnuplot
+
   SHELL
 end

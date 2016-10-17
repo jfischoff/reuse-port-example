@@ -7,6 +7,7 @@ Using [`warp`](https://hackage.haskell.org/package/warp) it is easy to perform z
 - [`SO_REUSEPORT`](#so_reuseport)
 - [Start Warp with `SO_REUSEPORT`](#start)
 - [Reloading](#reloading)
+- [Setup](#setup)
 - [Performance](#performance)
 - [Design Analysis](#design)
 - [Thanks](#thanks)
@@ -85,7 +86,7 @@ In a real server we would have many endpoints. We could either return the PID in
 
 ## <a name="reloading"> Reloading
 
-#### Setup
+#### Queuing Disciplines
 
 Before we can reload we need to setup a `plug` queuing discipline. This will let us pause `SYN` packets, e.g. new connections, temporarily while we bind or close a socket.
 
@@ -133,14 +134,17 @@ Reloading a new version in production requires a dance with your process supervi
 
 An example for demonstrating this process can be found in [`reload/Main.hs`](reload/Main.hs). The `reload` app creates a new server and shutdowns all other instances. This is for demonstration purposes. In production you will want to integrate reloading with your process supervisor.
 
-## <a name="performance"> Performance
+## <a name="setup"> Setup
 
-This repo includes a Vagrant file for running a performance test. To run the test using the follow these steps.
+This repo includes a Vagrant file for running a performance test. Run with the following steps.
+
+The setup requires `stack`, `ab`, Linux and optionally `gnuplot`. The easiest way to test it is to use the Vagrant file, which will create a VM with everything installed. Vagrant can be downloaded [here](https://www.vagrantup.com/downloads.html)
 
 ```bash
 $ vagrant up
 $ vagrant ssh
 $ cd /vagrant
+$ stack setup
 $ bin/test
 ```
 
@@ -153,6 +157,8 @@ $ bin/test
   1. Stop the server.
   1. Start the `reload` every 100 ms.
   1. Run ab.
+
+## <a name="performance"> Performance
 
 Below are the times without constant reloading and with constant reloading. Crucially no connections are dropped and there are no requests failures. 100000 requests were run.
 

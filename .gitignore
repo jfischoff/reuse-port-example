@@ -1,5 +1,6 @@
 .stack-work
 reloading.tsv
+*.log
 baseline.tsv
 .DS_Store
 .stack
