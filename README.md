@@ -141,6 +141,8 @@ This repo includes a Vagrant file for running a performance test. Run with the f
 The setup requires `stack`, `ab`, `libnl-utils`, Linux and optionally `gnuplot`. The easiest way to test it is to use the Vagrant file, which will create a VM with everything installed. Vagrant can be downloaded [here](https://www.vagrantup.com/downloads.html)
 
 ```bash
+$ git clone https://github.com/jfischoff/reuse-port-example
+$ cd reuse-port-example
 $ vagrant up
 $ vagrant ssh
 $ cd /vagrant
@@ -205,7 +207,7 @@ One alternative would be to use an immutable blue/green deployment strategy, and
 
 ### `huptime`
 
-[`huptime`](https://github.com/amscanne/huptime) was mentioned on the Yelp blog, but was not appropriate for their problem. However, I think it might solve many Haskell web server use cases. If anyone has any experience using `huptime`, let know through the github issues of this repo or directly at [@jfischoff](https://twitter.com/jfischoff). 
+[`huptime`](https://github.com/amscanne/huptime) was mentioned on the Yelp blog, but was not appropriate for their problem. However, I think it might solve many Haskell web server use cases. If anyone has any experience using `huptime`, let know through the github issues of this repo or directly at [@jfischoff](https://twitter.com/jfischoff).
 
 ### Future Work
 
