@@ -1,7 +1,7 @@
 ## Zero Downtime Deployment with Warp
 
 Using [`warp`](https://hackage.haskell.org/package/warp) it is easy to perform zero downtime deployment with
-`SO_REUSEPORT`. This literate Haskell file creates a server for zero downtime deploys and the repo has utilities that restart it without failed requests.
+[`SO_REUSEPORT`](https://lwn.net/Articles/542629/). This literate Haskell file creates a server for zero downtime deploys and the repo has utilities that restart it without failed requests.
 
 ## Outline
 - [`SO_REUSEPORT`](#so_reuseport)
@@ -13,7 +13,7 @@ Using [`warp`](https://hackage.haskell.org/package/warp) it is easy to perform z
 
 ## `SO_REUSEPORT`
 
-`SO_REUSEPORT` is an extension on newer versions of [Linux](https://lwn.net/Articles/542629/) and BSD (avoid OSX) that allows multiple sockets to bind to the same port. Additionally, Linux will load balance connections between sockets.
+`SO_REUSEPORT` is an extension on newer versions of Linux and BSD (avoid OSX) that allows multiple sockets to bind to the same port. Additionally, Linux will load balance connections between sockets.
 
 There is a downside to `SO_REUSEPORT`. When the number of sockets bound to a
 port changes, there is the possibility that packets for a single TCP connection will get routed to two different sockets. This will lead to a failed requests. The likelihood is very low, but to prevent against this, we use a technique developed by [Yelp](https://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html).
