@@ -114,12 +114,14 @@ iptables -t mangle -I OUTPUT -p tcp -s 127.0.0.1 --syn -j MARK --set-mark 1
 Reloading a new version in production requires a dance with your process supervisor. However the principle is similar even if the details are different.
 
   1. Stop additional `SYN` from being delivered using
+
      ```bash
      sudo nl-qdisc-add --dev=lo --parent=1:4 --id=40: \
                        --update plug --buffer
      ```
   1. Start a new version of the server and save the PID.
   1. Release the plug and let the `SYN` packets flow.
+
      ```bash
      sudo nl-qdisc-add --dev=lo --parent=1:4 --id=40: \
                        --update plug --release-indefinite
