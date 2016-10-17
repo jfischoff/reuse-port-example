@@ -1,4 +1,4 @@
-sudo ./bin/setup-qdisks
+sudo ./bin/setup-qdiscs
 
 stack exec reuse-server > /dev/null &
 server=$!
