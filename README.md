@@ -1,6 +1,6 @@
 ## Zero Downtime Deployment with Warp
 
-Using `warp` it is easy to perform zero downtime deployment with
+Using [`warp`](https://hackage.haskell.org/package/warp) it is easy to perform zero downtime deployment with
 `SO_REUSEPORT`. This literate Haskell file creates a server for zero downtime deploys and the repo has utilities that restart it without failed requests.
 
 ## Outline
