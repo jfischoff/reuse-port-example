@@ -24,14 +24,14 @@ Just ignore this code for now and skip to [Start Warp with `SO_REUSEPORT`](#star
 
 ```haskell
 import Control.Exception
+import Data.ByteString.Lazy.Char8 (pack)
 import Network.HTTP.Types
 import Network.Socket
 import Network.Wai
 import Network.Wai.Handler.Warp
-import System.Posix.Signals
 import System.Posix.Process
+import System.Posix.Signals
 import System.Posix.Types
-import Data.ByteString.Lazy.Char8 (pack)
 ```
 
 ## <a name="start"> Start Warp with `SO_REUSEPORT`
@@ -204,4 +204,4 @@ However, changing the number of child process will still be problematic but we c
 
 ## <a name="thanks"> Thanks
 
-I learned about `SO_REUSEPORT` from Imran Hameed, and the Yelp post was invaluable.
+I learned about `SO_REUSEPORT` from Imran Hamead, and the Yelp post was invaluable for preventing errors.
