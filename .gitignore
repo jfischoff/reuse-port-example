@@ -1,0 +1,15 @@
+.stack-work
+.DS_Store
+.stack
+error.log
+.cabal-sandbox/
+cabal.sandbox.config
+dist
+*.hp
+*.ps
+*.prof
+*.aux
+.vagrant
+~*
+*~
+.osx-cabal-sandbox/
