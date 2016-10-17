@@ -38,8 +38,7 @@ import Data.ByteString.Lazy.Char8 (pack)
 
 First we need to create a socket with the `SO_REUSEPORT` flag. We repurpose some `streaming-commons` code.
 
-This code opens a socket on localhost and crucially sets the `SO_REUSEPORT`
-flag.
+This code opens a socket on localhost and crucially sets the `SO_REUSEPORT` flag.
 
 ```haskell
 bindSocketReusePort :: PortNumber -> IO Socket
@@ -56,10 +55,8 @@ bindSocketReusePort p =
 ```
 
 The server code takes advantage of two aspects of `warp`'s design.
-  1. `warp` let's you start the server with a socket your have created on your
-     own.
-  2. When the socket is closed `warp` gracefully shutdowns after it completes
-     the current outstanding requests.
+  1. `warp` let's you start the server with a socket your have created on your own.
+  2. When the socket is closed `warp` gracefully shutdowns after it completes the current outstanding requests.
 
 ```haskell
 main :: IO ()
@@ -87,16 +84,13 @@ main = do
          responder $ responseLBS status200 [] $ pack $ show processId
 ```
 
-In a real server, we would have many endpoints and could either return the PID
-in a header, or with a special health endpoint. However our test server will return the PID regardless of the URL path parts or the HTTP verb.
+In a real server, we would have many endpoints and could either return the PID in a header, or with a special health endpoint. However our test server will return the PID regardless of the URL path parts or the HTTP verb.
 
 ## <a name="reloading"> Reloading
 
 #### Setup
 
-Before we can reload we need to setup a `plug` queuing discipline. This will
-let us pause `SYN` packets, e.g. new requests, temporarily while we bind or
-close a socket.
+Before we can reload we need to setup a `plug` queuing discipline. This will let us pause `SYN` packets, e.g. new requests, temporarily while we bind or close a socket.
 
 The following code was copied from the Yelp blog post. It is also in the repo in the `bin/setup-qdiscs` file. All operations require `sudo`.
 
@@ -121,8 +115,7 @@ iptables -t mangle -I OUTPUT -p tcp -s 127.0.0.1 --syn -j MARK --set-mark 1
 
 #### Reload
 
-Reloading a new version in production requires a dance with your process
-supervisor. However the principle is similar even if the details are different.
+Reloading a new version in production requires a dance with your process supervisor. However the principle is similar even if the details are different.
 
   1. Stop additional `SYN` from being delivered using
      ```bash
@@ -141,15 +134,11 @@ supervisor. However the principle is similar even if the details are different.
      shutdown.
   1. Release the plug again.
 
-An example for demonstrating this process can be found in `reload/Main.hs`. The
-`reload` app creates a new server and shutdowns all other instances.
-This is for demonstration purposes. In production you will want to integrate
-reloading with your process supervisor.
+An example for demonstrating this process can be found in `reload/Main.hs`. The `reload` app creates a new server and shutdowns all other instances. This is for demonstration purposes. In production you will want to integrate reloading with your process supervisor.
 
 ## <a name="performance"> Performance
 
-This repo includes a Vagrant file for running a performance test. To run the
-test using the follow these steps.
+This repo includes a Vagrant file for running a performance test. To run the test using the follow these steps.
 
 ```bash
 $ vagrant up
@@ -168,8 +157,7 @@ $ bin/test
   1. Start the `reload` every 100 ms.
   1. Run ab.
 
-Below are the times without constant reloading and with constant reloading.
-Crucially no connections are dropped and there are no requests failures.
+Below are the times without constant reloading and with constant reloading. Crucially no connections are dropped and there are no requests failures.
 
 #### Without Constant Reloading (Baseline)
 - mean: 0.374 ms
@@ -190,11 +178,8 @@ Crucially no connections are dropped and there are no requests failures.
 - Reloading is fast
 
 #### Disadvantages
-- The new version of the server is responding to requests **before health
-    checks** are performed. If there is something wrong with the code, say it
-    segfaults because the executable was corrupted, this will cause client impact.
-- There is a small amount overhead because the requests are blocked during the
-    reload.
+- The new version of the server is responding to requests **before health checks** are performed. If there is something wrong with the code, say it segfaults because the executable was corrupted, this will cause client impact.
+- There is a small amount overhead because the requests are blocked during the reload.
 
 ### Immutable Alternative
 
@@ -213,17 +198,10 @@ One alternative would be to use an immutable blue/green deployment strategy, and
 
 ### Future Work
 
-An alternative design for utilizing `SO_REUSEPORT` is to create a parent process
-that keeps a pool of sockets and passes the file descriptions to the new
-children on reload. This is essentially the design that `nginx` has. The primary
-advantage is in the typical case we would not need to utilize the `plug`
-queuing discipline.
+An alternative design for utilizing `SO_REUSEPORT` is to create a parent process that keeps a pool of sockets and passes the file descriptions to the new children on reload. This is essentially the design that `nginx` has. The primary advantage is in the typical case we would not need to utilize the `plug` queuing discipline.
 
-However, changing the number of child process will still be problematic but we
-could utilize the `plug` queueing discipline approach Yelp developed utilized
-here.
+However, changing the number of child process will still be problematic but we could utilize the `plug` queueing discipline approach Yelp developed utilized here.
 
 ## <a name="thanks"> Thanks
 
-I learned about `SO_REUSEPORT` from Imran Hameed, and the Yelp post was
-invaluable.
+I learned about `SO_REUSEPORT` from Imran Hameed, and the Yelp post was invaluable.
