@@ -143,7 +143,7 @@ $ cd /vagrant
 $ bin/test
 ```
 
-`bin/test` will:
+[`bin/test`](bin/test) will:
 
   1. Build the project.
   1. Setup the queuing disciplines.
