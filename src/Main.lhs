@@ -88,7 +88,7 @@ In a real server we would have many endpoints. We could either return the PID in
 
 Before we can reload we need to setup a `plug` queuing discipline. This will let us pause `SYN` packets, e.g. new connections, temporarily while we bind or close a socket.
 
-The following code was copied from the Yelp blog post ([link](https://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html)). It is also in the repo in the `bin/setup-qdiscs` file. All operations require `sudo`.
+The following code was copied from the Yelp blog post ([link](https://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html)). It is also in the repo in the [`bin/setup-qdiscs`](bin/setup-qdiscs) file. All operations require `sudo`.
 
 ```bash
 # Set up the queuing discipline
