@@ -72,6 +72,8 @@ Vagrant.configure("2") do |config|
     apt-get update
     apt-get -y install stack
     apt-get -y install gnuplot
+    apt-get -y install libnl-utils
+    apt-get -y install apache2-utils
 
   SHELL
 end

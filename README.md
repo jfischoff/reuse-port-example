@@ -138,7 +138,7 @@ An example for demonstrating this process can be found in [`reload/Main.hs`](rel
 
 This repo includes a Vagrant file for running a performance test. Run with the following steps.
 
-The setup requires `stack`, `ab`, Linux and optionally `gnuplot`. The easiest way to test it is to use the Vagrant file, which will create a VM with everything installed. Vagrant can be downloaded [here](https://www.vagrantup.com/downloads.html)
+The setup requires `stack`, `ab`, `libnl-utils`, Linux and optionally `gnuplot`. The easiest way to test it is to use the Vagrant file, which will create a VM with everything installed. Vagrant can be downloaded [here](https://www.vagrantup.com/downloads.html)
 
 ```bash
 $ vagrant up
@@ -202,6 +202,10 @@ One alternative would be to use an immutable blue/green deployment strategy, and
   * Requires modifying the load balancers config, which is an easy way to cause
     catastrophic failure.
   * Arguably more work to setup.
+
+### `huptime`
+
+[`huptime`](https://github.com/amscanne/huptime) was mentioned on the Yelp blog, but was not appropriate for their problem. However, I think it might solve many Haskell web server use cases. If anyone has any experience using `huptime`, let know through the github issues of this repo or directly at [@jfischoff](https://twitter.com/jfischoff). 
 
 ### Future Work
 
