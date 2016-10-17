@@ -13,10 +13,10 @@ Using `warp` it is easy to perform zero downtime deployment with
 
 ## `SO_REUSEPORT`
 
-`SO_REUSEPORT` is an extension on newer versions of Linux and BSD (avoid OSX) that allows multiple sockets to bind to the same port. Additionally, Linux will load balance connections between sockets.
+`SO_REUSEPORT` is an extension on newer versions of [Linux](https://lwn.net/Articles/542629/) and BSD (avoid OSX) that allows multiple sockets to bind to the same port. Additionally, Linux will load balance connections between sockets.
 
 There is a downside to `SO_REUSEPORT`. When the number of sockets bound to a
-port changes, there is the possibility that packets for a single TCP connection will get routed to two different sockets. This will lead to a failed requests. The likelihood is very low, but to prevent against this, we use a technique developed by Yelp.
+port changes, there is the possibility that packets for a single TCP connection will get routed to two different sockets. This will lead to a failed requests. The likelihood is very low, but to prevent against this, we use a technique developed by [Yelp](https://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html).
 
 #### Boring Haskell Import Statements
 
@@ -86,9 +86,9 @@ In a real server we would have many endpoints. We could either return the PID in
 
 #### Setup
 
-Before we can reload we need to setup a `plug` queuing discipline. This will let us pause `SYN` packets, e.g. new requests, temporarily while we bind or close a socket.
+Before we can reload we need to setup a `plug` queuing discipline. This will let us pause `SYN` packets, e.g. new connections, temporarily while we bind or close a socket.
 
-The following code was copied from the Yelp blog post. It is also in the repo in the `bin/setup-qdiscs` file. All operations require `sudo`.
+The following code was copied from the Yelp blog post ([link](https://engineeringblog.yelp.com/2015/04/true-zero-downtime-haproxy-reloads.html)). It is also in the repo in the `bin/setup-qdiscs` file. All operations require `sudo`.
 
 ```bash
 # Set up the queuing discipline
@@ -128,9 +128,9 @@ Reloading a new version in production requires a dance with your process supervi
   1. Stop `SYN` packets again.
   1. Send `SIGTERM` to the other server processes so they will gracefully
      shutdown.
-  1. Release the plug again.
+  1. Release the `plug` again.
 
-An example for demonstrating this process can be found in `reload/Main.hs`. The `reload` app creates a new server and shutdowns all other instances. This is for demonstration purposes. In production you will want to integrate reloading with your process supervisor.
+An example for demonstrating this process can be found in [`reload/Main.hs`](reload/Main.hs). The `reload` app creates a new server and shutdowns all other instances. This is for demonstration purposes. In production you will want to integrate reloading with your process supervisor.
 
 ## <a name="performance"> Performance
 
@@ -156,16 +156,20 @@ $ bin/test
 Below are the times without constant reloading and with constant reloading. Crucially no connections are dropped and there are no requests failures.
 
 #### Without Constant Reloading (Baseline)
-- mean: 0.374 ms
-- stddev: 0.2 ms
+- mean: 0.475 ms
+- stddev: 0.3 ms
 - 99%: 1 ms
-- max: 67 ms
+- max: 76 ms
+
+![Baseline Scatter Plot](/baseline.png)
 
 #### With Constant Reloading
-- mean: 0.550 ms
-- stddev: 1.9 ms
-- 99%: 2 ms
-- max: 276 ms
+- mean: 1.05 ms
+- stddev: 6.4 ms
+- 99%: 10 ms
+- max: 450 ms
+
+![Reloading Scatter Plot](/reloading.png)
 
 ## <a name="design"> Design Analysis
 

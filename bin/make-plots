@@ -1,0 +1,2 @@
+gnuplot bin/plotBaseline.p
+gnuplot bin/plotReloading.p

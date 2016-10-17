@@ -7,7 +7,7 @@ trap "kill $server" SIGTERM EXIT
 
 while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
-ab -n 100000 http://localhost:7000/
+ab -n 100000 -g baseline.tsv http://localhost:7000/
 
 kill $server
 
@@ -18,6 +18,6 @@ trap "kill $reloader" SIGTERM EXIT
 
 while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
-ab -n 100000 http://localhost:7000/
+ab -n 100000 -g reloading.tsv http://localhost:7000/
 
 kill $reloader

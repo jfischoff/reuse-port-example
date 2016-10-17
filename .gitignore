@@ -1,4 +1,6 @@
 .stack-work
+reloading.tsv
+baseline.tsv
 .DS_Store
 .stack
 error.log
