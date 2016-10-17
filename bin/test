@@ -5,7 +5,7 @@ sudo ./bin/setup-qdiscs
 stack exec reuse-server > /dev/null &
 server=$!
 
-trap "kill $server" SIGTERM SIGINT
+trap "kill $server || true" SIGTERM SIGINT
 
 while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
@@ -16,7 +16,7 @@ kill $server
 ./bin/reload > /dev/null &
 reloader=$!
 
-trap "kill $reloader" SIGTERM SIGINT
+trap "kill $reloader || true" SIGTERM SIGINT
 
 while ! nc -q 1 localhost 7000 </dev/null; do sleep 10; done
 
