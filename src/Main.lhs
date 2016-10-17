@@ -22,44 +22,16 @@ port changes, there is the possibility that packets for a single TCP connection 
 
 Just ignore this code for now and skip to [Start Warp with `SO_REUSEPORT`](#start).
 
-I explicitly export identifiers here to increase the discoverability of the
-code.
-
 ```haskell
-import Control.Exception          ( bracket
-                                  , bracketOnError
-                                  )
-import Network.HTTP.Types         ( status200 )
-import Network.Socket             ( bind
-                                  , close
-                                  , defaultProtocol
-                                  , Family( AF_INET )
-                                  , listen
-                                  , maxListenQueue
-                                  , PortNumber
-                                  , setSocketOption
-                                  , socket
-                                  , Socket
-                                  , SockAddr( SockAddrInet )
-                                  , SocketOption( NoDelay
-                                                , ReuseAddr
-                                                , ReusePort
-                                                )
-                                  , SocketType( Stream )
-                                  , tupleToHostAddress
-                                  )
-import Network.Wai                ( responseLBS
-                                  )
-import Network.Wai.Handler.Warp   ( defaultSettings
-                                  , runSettingsSocket
-                                  )
-import System.Posix.Signals       ( installHandler
-                                  , Handler( CatchOnce )
-                                  , sigINT
-                                  )
-import System.Posix.Process       ( getProcessID )
-import System.Posix.Types         ( CPid (..) )
-import Data.ByteString.Lazy.Char8 ( pack )
+import Control.Exception
+import Network.HTTP.Types
+import Network.Socket
+import Network.Wai
+import Network.Wai.Handler.Warp
+import System.Posix.Signals
+import System.Posix.Process
+import System.Posix.Types
+import Data.ByteString.Lazy.Char8 (pack)
 ```
 
 ## <a name="start"> Start Warp with `SO_REUSEPORT`
