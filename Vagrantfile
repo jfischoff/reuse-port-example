@@ -71,6 +71,7 @@ Vagrant.configure("2") do |config|
     apt-get -y install gnuplot
     apt-get -y install libnl-utils
     apt-get -y install apache2-utils
+    apt-get -y install gcc
 
   SHELL
 end
