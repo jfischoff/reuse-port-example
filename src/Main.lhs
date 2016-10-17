@@ -71,7 +71,7 @@ main = do
     close
     $ \sock -> do
        -- Before we start the server, we install a signal handler for
-       -- `SIGTERM` to close the socket. This will start the graceful
+       -- SIGTERM to close the socket. This will start the graceful
        -- shutdown.
        installHandler sigTERM (CatchOnce $ close sock) Nothing
        -- Start the server with socket we created earlier.
