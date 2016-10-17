@@ -66,11 +66,8 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 575159689BEFB442
-    echo 'deb http://download.fpcomplete.com/ubuntu xenial main'|sudo tee /etc/apt/sources.list.d/fpco.list
-
     apt-get update
-    apt-get -y install stack
+    apt-get -y install haskell-stack
     apt-get -y install gnuplot
     apt-get -y install libnl-utils
     apt-get -y install apache2-utils
